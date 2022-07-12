@@ -1,7 +1,7 @@
 import { CircularProgressbar } from "react-circular-progressbar"
 import theme from "../../styles/theme"
 import { Container } from "./styles"
-import { } from 'react-icons/fi'
+import { AiFillCheckCircle } from 'react-icons/ai'
 
 interface IFileUploadProgressProps {
     key: string
@@ -17,7 +17,9 @@ export default function FileUploadProgress({key, name, size, value }:IFileUpload
             size: {(size/1000).toFixed(2)} KB
 
             <div>
-                <CircularProgressbar 
+            {value === 100
+                ?<AiFillCheckCircle color={theme.colors.green} size='2rem'/>
+                :<CircularProgressbar 
                     strokeWidth={20}
                     value={value}
                     styles={{
@@ -25,6 +27,7 @@ export default function FileUploadProgress({key, name, size, value }:IFileUpload
                         path: {stroke: theme.colors.green}
                     }}
                 />
+            }
             </div>          
         </Container>
     )

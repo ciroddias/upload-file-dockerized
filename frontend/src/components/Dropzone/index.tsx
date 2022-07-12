@@ -2,16 +2,11 @@ import React, {useCallback} from 'react'
 import {useDropzone} from 'react-dropzone'
 import { Container } from './styles';
 
-export default function Dropzone() {
-  
-    const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const formData = new FormData();
-    acceptedFiles.forEach(file => {
-        formData.append("file", file)
-    });
-    //const response = await uploadFiles(formData)
-  }, [])
+interface IDropzoneProps {
+  onDrop: (acceptedFiles: File[]) => Promise<void>;
+}
 
+export default function Dropzone({onDrop}: IDropzoneProps) {
   const {getRootProps, getInputProps, isDragActive} = useDropzone({
     onDrop, 
     accept: {

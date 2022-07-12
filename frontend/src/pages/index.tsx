@@ -6,7 +6,7 @@ import { FiUpload } from 'react-icons/fi'
 import theme from '../styles/theme'
 import Dropzone from '../components/Dropzone'
 import Input from '../components/Input'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useCallback, useState } from 'react'
 import UploadModal from '../components/UploadModal'
 import { IFile } from '../interfaces/IFile'
 import { instance } from './api'
@@ -16,6 +16,24 @@ const Home: NextPage = () => {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
   
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const formData = new FormData();
+
+      // setFiles([...files, ...acceptedFiles])
+
+      for (let i = 0; i < acceptedFiles.length; i++) {
+        let array = files
+        array.push(acceptedFiles[i])
+        setFiles(array)
+      }
+
+    acceptedFiles.forEach(file => {
+        formData.append("file", file)
+    });
+
+    const response = await uploadFiles(formData)
+
+  }, [])
  
   const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = [...e.target.files as any]
@@ -74,7 +92,7 @@ const Home: NextPage = () => {
           }
         >
           <Input label='Selecione os arquivos' type='file' accept="image/png, image/jpg, image/gif, image/jpeg" onChange={handleUpload}/>
-          <Dropzone />
+          <Dropzone onDrop={onDrop}/>
         </Card>
         {files.length > 0 
           && <UploadModal
