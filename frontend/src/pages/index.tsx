@@ -16,44 +16,7 @@ const Home: NextPage = () => {
   const [uploadProgress, setUploadProgress] = useState(0)
   const [currentFileIndex, setCurrentFileIndex] = useState(0);
   
-  const onDrop = useCallback(async (acceptedFiles: File[]) => {
-    const formData = new FormData();
-
-      // setFiles([...files, ...acceptedFiles])
-
-      for (let i = 0; i < acceptedFiles.length; i++) {
-        let array = files
-        array.push(acceptedFiles[i])
-        setFiles(array)
-      }
-
-    acceptedFiles.forEach(file => {
-        formData.append("file", file)
-    });
-
-    const response = await uploadFiles(formData)
-
-  }, [])
- 
-  const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = [...e.target.files as any]
-    
-    for (let i = 0; i < selectedFiles.length; i++) {
-      let array = files
-      array.push(selectedFiles[i])
-      setFiles(array)
-    }
-
-    const formData = new FormData();
-    selectedFiles.map(
-      file => {
-        formData.append("file", file)
-      }
-    )
-    const response = await uploadFiles(formData)
-  }
-
-  async function uploadFiles(formData: FormData) {
+  const uploadFiles = useCallback(async (formData: FormData) => {
     try {
       const response = await instance.post('/', formData, {
         headers: {
@@ -71,6 +34,43 @@ const Home: NextPage = () => {
     } catch (error: any) {
       return {status: false, message: error.message}
     }
+  }, [currentFileIndex])
+
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
+    const formData = new FormData();
+
+      // setFiles([...files, ...acceptedFiles])
+
+      for (let i = 0; i < acceptedFiles.length; i++) {
+        let array = files
+        array.push(acceptedFiles[i])
+        setFiles(array)
+      }
+
+    acceptedFiles.forEach(file => {
+        formData.append("file", file)
+    });
+
+    const response = await uploadFiles(formData)
+
+  }, [files, uploadFiles])
+ 
+  const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const selectedFiles = [...e.target.files as any]
+    
+    for (let i = 0; i < selectedFiles.length; i++) {
+      let array = files
+      array.push(selectedFiles[i])
+      setFiles(array)
+    }
+
+    const formData = new FormData();
+    selectedFiles.map(
+      file => {
+        formData.append("file", file)
+      }
+    )
+    const response = await uploadFiles(formData)
   }
 
   return (
